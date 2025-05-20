@@ -1,0 +1,12 @@
+replicaCount: 1
+
+image:
+  repository: acrinterview.azurecr.io/simple-web
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+
+namespace: yaaf
