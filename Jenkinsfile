@@ -5,8 +5,6 @@ pipeline {
     parameters {
         // Action options
         choice(name: 'ACTION', choices: ['deploy', 'destroy'], description: 'Action to perform: deploy or destroy the application')
-        // Namespace options, add more IRL
-        choice(name: 'NAMESPACE', choices: ['yaaf'], description: 'Namespace to deploy to')
         // Release name options
         string(name: 'RELEASE_NAME', defaultValue: 'simple-web', description: 'Name of the Helm release')
     }
@@ -22,7 +20,6 @@ pipeline {
                 sh 'helm version'
                 sh 'kubectl version'
                 echo "ACTION: ${params.ACTION}"
-                echo "NAMESPACE: ${params.NAMESPACE}"
                 echo "RELEASE_NAME: ${params.RELEASE_NAME}"
             }
         }
@@ -34,10 +31,10 @@ pipeline {
             steps {
                 // Check if the namespace exists, if not then create it
                 sh '''
-                    if ! kubectl get namespace ${params.NAMESPACE} &> /dev/null; then
-                        echo "Error: Namespace ${params.NAMESPACE} does not exist"
+                    if ! kubectl get namespace yaaf &> /dev/null; then
+                        echo "Error: Namespace 'yaaf' does not exist"
                     else
-                        echo "Namespace ${params.NAMESPACE} already exists."
+                        echo "Namespace 'yaaf' already exists."
                     fi
                 '''
             }
@@ -54,7 +51,7 @@ pipeline {
                         sh '''
                             echo "Running Helm dry-run to validate chart..."
                             helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \
-                                --namespace ${params.NAMESPACE} \
+                                --namespace yaaf \
                                 --dry-run --debug
                             
                             echo "Helm chart validation successful!"
@@ -78,9 +75,8 @@ pipeline {
                     try {
                         sh '''
                             helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \
-                                --namespace ${params.NAMESPACE} \
-                                --set namespace=${params.NAMESPACE}
-                        '''
+                                --namespace yaaf \
+                            '''
                         echo "Deployment successful!"
                     } catch (Exception e) {
                         echo "Deployment failed: ${e.message}"
@@ -98,10 +94,10 @@ pipeline {
             steps {
                 sh '''
                     echo "Verifying deployment..."
-                    kubectl get all -n ${params.NAMESPACE} -l app=${params.RELEASE_NAME}
+                    kubectl get all -n yaaf -l app=${params.RELEASE_NAME}
                     
                     # Wait for pods to be ready
-                    kubectl wait --namespace=${params.NAMESPACE} \
+                    kubectl wait --namespace=yaaf \
                         --for=condition=ready pod \
                         --selector=app=${params.RELEASE_NAME} \
                         --timeout=60s
@@ -117,8 +113,8 @@ pipeline {
                 script {
                     try {
                         sh '''
-                            echo "Removing deployment ${params.RELEASE_NAME} from namespace ${params.NAMESPACE}..."
-                            helm uninstall ${params.RELEASE_NAME} --namespace ${params.NAMESPACE} || true
+                            echo "Removing deployment ${params.RELEASE_NAME} from namespace yaaf..."
+                            helm uninstall ${params.RELEASE_NAME} --namespace yaaf || true
                         '''
                         echo "Uninstall successful!"
                     } catch (Exception e) {
