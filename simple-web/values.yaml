@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: acrinterview.azurecr.io/simple-web
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "latest" # Or specific tag
 
 service:
   type: ClusterIP
@@ -11,6 +11,6 @@ service:
 
 ingress:
   enabled: true
-  host: ""
+  host: "" # Or set domain name
 
 namespace: yaaf

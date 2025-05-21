@@ -23,3 +23,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.port }}
+          resources:
+            limits:
+              cpu: "20m"
+              memory: "32Mi" # Enough for a very simple web app
+    
+            requests: # Minimum resources required to start the container
+              cpu: "10m"
+              memory: "16Mi"
