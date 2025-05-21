@@ -9,4 +9,8 @@ service:
   type: ClusterIP
   port: 80
 
+ingress:
+  enabled: true
+  host: ""
+
 namespace: yaaf

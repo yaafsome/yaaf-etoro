@@ -5,9 +5,11 @@ metadata:
   namespace: {{ .Values.namespace }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    # Additional annotations for Nginx
 spec:
   rules:
-    - http:
+    - host: {{ .Values.ingress.host | default "" | quote }}  # This allows using the IP directly if host is not specified
+      http:
         paths:
           - path: /yaaf
             pathType: Prefix
