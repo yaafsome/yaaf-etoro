@@ -13,12 +13,13 @@ spec:
   maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
   cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
   pollingInterval: {{ .Values.keda.pollingInterval }}
-  
+
   triggers:
     # Set a for-each type loop to iterate over the triggers
     {{- range $i, $trigger := .Values.keda.triggers }}
     - type: {{ $trigger.type }}
       metadata:
+        # Nested iterator for metadata
         {{- range $key, $value := $trigger.metadata }}
         {{ $key }}: "{{ $value }}"
         {{- end }}
