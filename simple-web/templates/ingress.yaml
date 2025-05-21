@@ -4,10 +4,9 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Values.namespace }}
   annotations:
-    {{ - range $key, $value := .Values.ingress.annotations }}
+    {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: "{{ $value }}"
     {{- end }}
-    
 spec:
   ingressClassName: {{ .Values.ingress.className | default "nginx" }}
   rules:

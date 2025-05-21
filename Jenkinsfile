@@ -18,7 +18,7 @@ pipeline {
         stage('Setup') {
             // Ensure kubectl and helm are installed and connect to AKS
             steps {
-                sh '''
+                sh """
                     helm version
                     # Log in to Azure (suppress output)
                     echo "Authenticating to Azure..."
@@ -30,7 +30,7 @@ pipeline {
                     kubelogin convert-kubeconfig -l msi
                     
                     kubectl version
-                '''
+                """
                 echo "ACTION: ${params.ACTION} \n NAMESPACE: ${params.NAMESPACE} \n RELEASE_NAME: ${params.RELEASE_NAME}"
             }
         }
@@ -55,55 +55,6 @@ pipeline {
                         echo "Helm chart validation failed: ${e.message}"
                         currentBuild.result = 'FAILURE'
                         error("Chart validation failed")
-                    }
-                }
-            }
-        }
-
-        // Dry Run deploy before actual deployment
-        stage('Validate Helm Chart') {
-            when {
-                expression { return params.ACTION == 'deploy' }
-            }
-            steps {
-                script {
-                    try {
-                        sh '''
-                            echo "Running Helm dry-run to validate chart..."
-                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \
-                                --namespace ${params.NAMESPACE} \
-                                --set namespace=${params.NAMESPACE} \
-                                --dry-run --debug
-                            
-                            echo "Helm chart validation successful!"
-                        '''
-                    } catch (Exception e) {
-                        echo "Helm chart validation failed: ${e.message}"
-                        currentBuild.result = 'FAILURE'
-                        error("Chart validation failed")
-                    }
-                }
-            }
-        }
-
-        // Conditional stages: Deploy or Destroy
-        stage('Deploy') {
-            when {
-                expression { return params.ACTION == 'deploy' }
-            }
-            steps {
-                script {
-                    try {
-                        sh """
-                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \\
-                                --namespace ${params.NAMESPACE} \\
-                                --set namespace=${params.NAMESPACE}
-                        """
-                        echo "Deployment successful!"
-                    } catch (Exception e) {
-                        echo "Deployment failed: ${e.message}"
-                        currentBuild.result = 'FAILURE'
-                        error("Deployment failed")
                     }
                 }
             }
