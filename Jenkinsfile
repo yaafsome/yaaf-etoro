@@ -6,7 +6,7 @@ pipeline {
         // Action options
         choice(name: 'ACTION', choices: ['deploy', 'destroy'], description: 'Action to perform: deploy or destroy the application')
         // Namespace options, add more IRL
-        choice(name: 'NAMESPACE', choices: ['yaaf'], description: 'Namespace to deploy to')
+        // choice(name: 'NAMESPACE', choices: ['yaaf'], description: 'Namespace to deploy to')
         // Release name options
         string(name: 'RELEASE_NAME', defaultValue: 'simple-web', description: 'Name of the Helm release')
     }
@@ -35,8 +35,7 @@ pipeline {
                 // Check if the namespace exists, if not then create it
                 sh '''
                     if ! kubectl get namespace ${params.NAMESPACE} &> /dev/null; then
-                        echo "Creating namespace ${params.NAMESPACE}..."
-                        kubectl create namespace ${params.NAMESPACE}
+                        echo "Error: Namespace ${params.NAMESPACE} does not exist"
                     else
                         echo "Namespace ${params.NAMESPACE} already exists."
                     fi
@@ -56,7 +55,6 @@ pipeline {
                             echo "Running Helm dry-run to validate chart..."
                             helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \
                                 --namespace ${params.NAMESPACE} \
-                                --set namespace=${params.NAMESPACE} \
                                 --dry-run --debug
                             
                             echo "Helm chart validation successful!"
