@@ -20,7 +20,7 @@ pipeline {
             // Ensure kubectl and helm are installed
             steps {
                 sh 'helm version'
-                sh 'kubectl version --short'
+                sh 'kubectl version'
                 echo "ACTION: ${params.ACTION}"
                 echo "NAMESPACE: ${params.NAMESPACE}"
                 echo "RELEASE_NAME: ${params.RELEASE_NAME}"
