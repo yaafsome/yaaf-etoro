@@ -17,8 +17,8 @@ pipeline {
         stage('Setup') {
             // Ensure kubectl and helm are installed
             steps {
-                sh 'helm version'
-                sh 'kubectl version'
+                // sh 'helm version'
+                // sh 'kubectl version'
                 echo "ACTION: ${params.ACTION}"
                 echo "RELEASE_NAME: ${params.RELEASE_NAME}"
             }
