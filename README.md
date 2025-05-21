@@ -24,7 +24,6 @@ The Jenkins pipeline automates the deployment and management of the application.
 - **Deployment Validation**: Performs a dry-run before actual deployment
   - Validates Helm chart syntax and configuration
   - Prevents deployment of faulty configurations
-
   ``` 
   helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \\
                --namespace ${params.NAMESPACE} \\
@@ -47,7 +46,6 @@ The Jenkins pipeline automates the deployment and management of the application.
 - **Cleanup**: Supports application removal
   - Uninstalls Helm releases
   - Handles error cases gracefully with try/catch blocks
-
 
 ## Notes
 

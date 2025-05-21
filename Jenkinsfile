@@ -60,28 +60,6 @@ pipeline {
             }
         }
 
-        // Conditional stages: Deploy or Destroy
-        stage('Deploy') {
-            when {
-                expression { return params.ACTION == 'deploy' }
-            }
-            steps {
-                script {
-                    try {
-                        sh """
-                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \\
-                                --namespace ${params.NAMESPACE} \\
-                        """
-                        echo "Deployment successful!"
-                    } catch (Exception e) {
-                        echo "Deployment failed: ${e.message}"
-                        currentBuild.result = 'FAILURE'
-                        error("Deployment failed")
-                    }
-                }
-            }
-        }
-
         stage('Verify Deployment') {
             when {
                 expression { return params.ACTION == 'deploy' }
