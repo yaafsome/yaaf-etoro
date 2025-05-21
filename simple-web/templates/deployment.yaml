@@ -25,9 +25,9 @@ spec:
             - containerPort: {{ .Values.service.port }}
           resources:
             limits:
-              cpu: "20m"
-              memory: "32Mi" # Enough for a very simple web app
-    
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+
             requests: # Minimum resources required to start the container
-              cpu: "10m"
-              memory: "16Mi"
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}

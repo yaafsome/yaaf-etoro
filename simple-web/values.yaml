@@ -14,3 +14,39 @@ ingress:
   host: "" # Or set domain name
 
 namespace: yaaf
+
+# Resource limits configuration
+resources:
+  limits:
+    cpu: "20m"
+    memory: "32Mi" # Enough for a very simple web app
+  requests: # Minimum resources required to start the container
+    cpu: "10m"
+    memory: "16Mi"
+
+# KEDA ScaledObject configuration
+keda:
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  cooldownPeriod: 300 # Prevent oscillation around threshold values
+  pollingInterval: 30
+  triggers:
+    # CPU-based scaling
+    - type: cpu
+      metadata:
+        type: Utilization
+        value: "80" # Percent utilization
+    
+    # Memory-based scaling
+    - type: memory
+      metadata:
+        type: Utilization
+        value: "80"
+    
+    # Scheduled scaling (active between 8:00 AM and midnight)
+    - type: cron
+      metadata:
+        timezone: UTC
+        start: 0 8 * * *     # 8:00 AM every day
+        end: 0 0 * * *       # 00:00 (midnight) every day
+        desiredReplicas: "2"

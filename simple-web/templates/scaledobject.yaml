@@ -1,0 +1,25 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Release.Name }}-scaledobject
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    name: {{ .Release.Name }}
+    kind: Deployment
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
+  
+  triggers:
+    # Set a for-each type loop to iterate over the triggers
+    {{- range $i, $trigger := .Values.keda.triggers }}
+    - type: {{ $trigger.type }}
+      metadata:
+        {{- range $key, $value := $trigger.metadata }}
+        {{ $key }}: "{{ $value }}"
+        {{- end }}
+    {{- end }}
