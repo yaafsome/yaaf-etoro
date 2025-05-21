@@ -6,7 +6,7 @@ image:
   tag: "latest"
 
 service:
-  type: ClusterIP
+  type: LoadBalancer # Pre-ingress
   port: 80
 
 namespace: yaaf
