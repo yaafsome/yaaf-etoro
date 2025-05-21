@@ -1,4 +1,3 @@
-// filepath: /home/azureuser/yaaf/Jenkinsfile
 pipeline {
     agent any
 

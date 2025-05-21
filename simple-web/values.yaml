@@ -8,18 +8,29 @@ image:
 service:
   type: ClusterIP
   port: 80
+  protocol: TCP
+  name: http # Default name for the service port
 
 ingress:
   enabled: true
   host: "" # Or set domain name
+  className: nginx
+
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ingress.class: nginx
+    # Additional annotations for Nginx
+  path: /yaaf
+  pathType: Prefix
 
 namespace: yaaf
 
 # Resource limits configuration
 resources:
   limits:
-    cpu: "20m"
+    cpu: "20m" # milliCPU (2% of a CPU core)
     memory: "32Mi" # Enough for a very simple web app
+  
   requests: # Minimum resources required to start the container
     cpu: "10m"
     memory: "16Mi"
