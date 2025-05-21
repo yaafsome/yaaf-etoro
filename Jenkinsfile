@@ -21,7 +21,8 @@ pipeline {
             steps {
                 sh '''
                     helm version
-                    
+                    # Log in to Azure
+                    az login -i
                     # Connect to AKS cluster using Azure CLI
                     echo "Authenticating to AKS cluster..."
                     az aks get-credentials -n devops-interview-aks -g devops-interview-rg --overwrite-existing
