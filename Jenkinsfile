@@ -44,14 +44,14 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh '''
+                        sh """
                             echo "Running Helm dry-run to validate chart..."
-                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \
-                                --namespace ${params.NAMESPACE} \
+                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \\
+                                --namespace ${params.NAMESPACE} \\
                                 --dry-run --debug
                             
                             echo "Helm chart validation successful!"
-                        '''
+                        """
                     } catch (Exception e) {
                         echo "Helm chart validation failed: ${e.message}"
                         currentBuild.result = 'FAILURE'
@@ -69,11 +69,11 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh '''
-                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \
-                                --namespace ${params.NAMESPACE} \
+                        sh """
+                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \\
+                                --namespace ${params.NAMESPACE} \\
                                 --set namespace=${params.NAMESPACE}
-                        '''
+                        """
                         echo "Deployment successful!"
                     } catch (Exception e) {
                         echo "Deployment failed: ${e.message}"
@@ -89,16 +89,16 @@ pipeline {
                 expression { return params.ACTION == 'deploy' }
             }
             steps {
-                sh '''
+                sh """
                     echo "Verifying deployment..."
                     kubectl get all -n ${params.NAMESPACE} -l app=${params.RELEASE_NAME}
                     
                     # Wait for pods to be ready
-                    kubectl wait --namespace=${params.NAMESPACE} \
-                        --for=condition=ready pod \
-                        --selector=app=${params.RELEASE_NAME} \
+                    kubectl wait --namespace=${params.NAMESPACE} \\
+                        --for=condition=ready pod \\
+                        --selector=app=${params.RELEASE_NAME} \\
                         --timeout=60s
-                '''
+                """
             }
         }
 
@@ -109,10 +109,10 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh '''
+                        sh """
                             echo "Removing deployment ${params.RELEASE_NAME} from namespace ${params.NAMESPACE}..."
                             helm uninstall ${params.RELEASE_NAME} --namespace ${params.NAMESPACE} || true
-                        '''
+                        """
                         echo "Uninstall successful!"
                     } catch (Exception e) {
                         echo "Uninstall failed or resources didn't exist: ${e.message}"
