@@ -1,6 +1,6 @@
 # Yaaf-eToro
 
-This repository contains the Helm chart, Jenkinsfile and script to manage and test a web application on a cluster using Helm and a parameter-based Jenkins pipeline.
+This repository contains a chart and Jenkinsfile to manage and deploy a web application on a cluster using Helm and a parameter-based Jenkins pipeline.
 
 ## Helm Chart (simple-web)
 
