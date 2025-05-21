@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Values.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /yaaf
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
     - http:
