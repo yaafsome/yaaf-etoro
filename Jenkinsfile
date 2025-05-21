@@ -44,6 +44,32 @@ pipeline {
             }
         }
 
+        // Dry Run deploy before actual deployment
+        stage('Validate Helm Chart') {
+            when {
+                expression { return params.ACTION == 'deploy' }
+            }
+            steps {
+                script {
+                    try {
+                        sh '''
+                            echo "Running Helm dry-run to validate chart..."
+                            helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \
+                                --namespace ${params.NAMESPACE} \
+                                --set namespace=${params.NAMESPACE} \
+                                --dry-run --debug
+                            
+                            echo "Helm chart validation successful!"
+                        '''
+                    } catch (Exception e) {
+                        echo "Helm chart validation failed: ${e.message}"
+                        currentBuild.result = 'FAILURE'
+                        error("Chart validation failed")
+                    }
+                }
+            }
+        }
+
         // Conditional stages: Deploy or Destroy
         stage('Deploy') {
             when {
