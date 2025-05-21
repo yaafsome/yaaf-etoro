@@ -6,7 +6,7 @@ pipeline {
         // Action options
         choice(name: 'ACTION', choices: ['deploy', 'destroy'], description: 'Action to perform: deploy or destroy the application')
         // Namespace options, add more IRL
-        // choice(name: 'NAMESPACE', choices: ['yaaf'], description: 'Namespace to deploy to')
+        choice(name: 'NAMESPACE', choices: ['yaaf'], description: 'Namespace to deploy to')
         // Release name options
         string(name: 'RELEASE_NAME', defaultValue: 'simple-web', description: 'Name of the Helm release')
     }
