@@ -21,8 +21,9 @@ pipeline {
             steps {
                 sh '''
                     helm version
-                    # Log in to Azure
-                    az login -i
+                    # Log in to Azure (suppress output)
+                    echo "Authenticating to Azure..."
+                    az login -i > /dev/null 2>&1
                     # Connect to AKS cluster using Azure CLI
                     echo "Authenticating to AKS cluster..."
                     az aks get-credentials -n devops-interview-aks -g devops-interview-rg --overwrite-existing
@@ -31,25 +32,7 @@ pipeline {
                     
                     kubectl version
                 '''
-                echo "ACTION: ${params.ACTION}"
-                echo "NAMESPACE: ${params.NAMESPACE}"
-                echo "RELEASE_NAME: ${params.RELEASE_NAME}"
-            }
-        }
-
-        stage('Create Namespace') {
-            when {
-                expression { return params.ACTION == 'deploy' }
-            }
-            steps {
-                // Check if the namespace exists, if not then create it
-                sh '''
-                    if ! kubectl get namespace ${params.NAMESPACE} &> /dev/null; then
-                        echo "Error: Namespace ${params.NAMESPACE} does not exist"
-                    else
-                        echo "Namespace ${params.NAMESPACE} already exists."
-                    fi
-                '''
+                echo "ACTION: ${params.ACTION} \n NAMESPACE: ${params.NAMESPACE} \n RELEASE_NAME: ${params.RELEASE_NAME}"
             }
         }
 
