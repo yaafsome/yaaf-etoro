@@ -6,6 +6,7 @@ image:
   tag: "latest"
 
 service:
+  name: simple-web
   type: ClusterIP
   port: 80
 
