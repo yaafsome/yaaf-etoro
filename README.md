@@ -25,13 +25,29 @@ The Jenkins pipeline automates the deployment and management of the application.
   - Validates Helm chart syntax and configuration
   - Prevents deployment of faulty configurations
 
+  ``` 
+  helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \\
+               --namespace ${params.NAMESPACE} \\
+               --dry-run --debug
+  ```
+
 - **Deployment Verification**: Ensures successful deployment
-  - Checks that pods are in the ready state
-  - Waits for readiness with configurable timeout
+  - Retrieves all resources in the specified namespace
+  - Waits for the application to be ready, with a timeout
+
+  ```
+  kubectl get all -n ${params.NAMESPACE} -l app=${params.RELEASE_NAME}
+
+  kubectl wait --namespace=${params.NAMESPACE} \\
+    --for=condition=ready pod \\
+    --selector=app=${params.RELEASE_NAME} \\
+    --timeout=60s
+  ```
 
 - **Cleanup**: Supports application removal
   - Uninstalls Helm releases
-  - Handles error cases gracefully
+  - Handles error cases gracefully with try/catch blocks
+
 
 ## Notes
 
