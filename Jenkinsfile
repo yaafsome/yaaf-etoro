@@ -18,7 +18,7 @@ pipeline {
         stage('Setup') {
             // Ensure kubectl and helm are installed and connect to AKS
             steps {
-                sh '''
+                sh """
                     helm version
                     # Log in to Azure (suppress output)
                     echo "Authenticating to Azure..."
@@ -30,7 +30,7 @@ pipeline {
                     kubelogin convert-kubeconfig -l msi
                     
                     kubectl version
-                '''
+                """
                 echo "ACTION: ${params.ACTION} \n NAMESPACE: ${params.NAMESPACE} \n RELEASE_NAME: ${params.RELEASE_NAME}"
             }
         }
@@ -71,7 +71,6 @@ pipeline {
                         sh """
                             helm upgrade --install ${params.RELEASE_NAME} ${HELM_CHART_DIR} \\
                                 --namespace ${params.NAMESPACE} \\
-                                --set namespace=${params.NAMESPACE}
                         """
                         echo "Deployment successful!"
                     } catch (Exception e) {
